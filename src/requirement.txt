@@ -1,0 +1,88 @@
+Function addExpense(amount, category, description, date): done
+    Create expense object with provided details
+    Save the expense object to storage (e.g., file, database)
+    Display success message
+
+Function viewAllExpenses(): done
+    Retrieve all expenses from storage
+    Display a formatted list of all expenses
+
+Function viewExpensesFiltered(filterType, filterValue):
+    If filterType is 'category':
+        Retrieve expenses filtered by category from storage
+    Else if filterType is 'date':
+        Retrieve expenses within the provided date range from storage
+    Display a formatted list of filtered expenses
+
+Function calculateTotalExpenses(): done
+    Retrieve all expenses from storage
+    Calculate the total sum of expenses
+    Display the total amount spent
+
+Function deleteExpense(expenseID): done
+    Retrieve expense with provided ID from storage
+    If expense exists:
+        Delete the expense
+        Display success message
+    Else:
+        Display error message (expense not found)
+
+// App overview
+
+Welcome to Expense Tracker CLI!
+
+1. Add an expense
+2. View all expenses
+3. View expenses by category
+4. View expenses by date range
+5. Calculate total expenses
+6. Delete an expense
+7. Exit
+
+Enter your choice: 1
+
+Enter expense details:
+Amount: 50
+Category: Groceries
+Description: Weekly grocery shopping
+Date (YYYY-MM-DD): 2023-11-27
+Expense added successfully!
+
+Enter your choice: 2
+
+Here are all your expenses:
+1. $50 for groceries on 2023-11-27 (ID: 123)
+2. $20 for dining out on 2023-11-26 (ID: 124)
+... (other expenses listed)
+
+Enter your choice: 3
+
+View expenses by:
+1. Category
+2. Date range
+Enter your choice: 1
+
+Enter category: Groceries
+
+Expenses in 'Groceries' category:
+1. $50 for groceries on 2023-11-27 (ID: 123)
+...
+
+Enter your choice: 5
+
+Total expenses: $250
+
+Enter your choice: 6
+
+Enter ID of expense to delete: 123
+Expense deleted successfully!
+
+Enter your choice: 2
+
+Here are all your expenses:
+1. $20 for dining out on 2023-11-26 (ID: 124)
+... (other expenses listed)
+
+Enter your choice: 7
+
+Exiting Expense Tracker CLI. Goodbye!
