@@ -1,8 +1,9 @@
 use chrono::{DateTime, Utc};
 use colored::Colorize;
+use serde::{Deserialize, Serialize};
 use std::fmt::{Display, Formatter};
 
-#[derive(Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct ExpenseList {
     pub expenses: Vec<Expense>,
     current_id: u32,
@@ -49,7 +50,7 @@ impl ExpenseList {
     }
 }
 
-#[derive(Debug, PartialOrd, PartialEq, Copy, Clone)]
+#[derive(Debug, PartialOrd, PartialEq, Serialize, Deserialize)]
 pub enum ExpenseCategory {
     FoodAndDining,
     Transportation,
@@ -84,7 +85,7 @@ impl Display for ExpenseCategory {
     }
 }
 
-#[derive(Debug, PartialOrd, PartialEq, Clone)]
+#[derive(Debug, PartialOrd, PartialEq, Serialize, Deserialize)]
 pub struct Expense {
     pub id: u32,
     pub amount: u32,

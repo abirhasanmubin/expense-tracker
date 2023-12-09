@@ -1,10 +1,13 @@
-use std::io;
+use std::fs::File;
+use std::io::{ErrorKind, Read, Write};
 use std::num::ParseIntError;
-use std::process;
+use std::{io, process};
 
 use colored::*;
 
 use crate::expense::{ExpenseCategory, ExpenseList};
+
+const FILE_NAME: &str = "expense_list.json";
 
 pub fn home(expense_list: &mut ExpenseList) {
     println!("Welcome to Expense Tracker CLI!");
@@ -21,15 +24,21 @@ pub fn home(expense_list: &mut ExpenseList) {
     match input {
         1 => {
             add_expense(expense_list);
+            write_file(expense_list);
+            home(expense_list);
         }
         2 => {
             view_all_expense(expense_list);
+            home(expense_list);
         }
         3 => {
             calculate_total_expenses(expense_list);
+            home(expense_list);
         }
         4 => {
             delete_expense(expense_list);
+            write_file(expense_list);
+            home(expense_list);
         }
         5 => {
             println!("{}", "Good bye".green());
@@ -42,6 +51,28 @@ pub fn home(expense_list: &mut ExpenseList) {
     }
 }
 
+fn write_file(expense_list: &mut ExpenseList) {
+    let serialized_expense_list =
+        serde_json::to_string(expense_list).expect("error while serializing");
+    let mut file = File::create(FILE_NAME).expect("failed to create file");
+    file.write_all(serialized_expense_list.as_bytes())
+        .expect("error while writing");
+}
+
+pub fn read_file() -> ExpenseList {
+    match File::open(FILE_NAME) {
+        Ok(mut file) => {
+            let mut serialized_expense_list = String::new();
+            file.read_to_string(&mut serialized_expense_list)
+                .expect("Failed to read file");
+
+            serde_json::from_str(&serialized_expense_list).unwrap_or_else(|_| ExpenseList::new())
+        }
+        Err(ref e) if e.kind() == ErrorKind::NotFound => ExpenseList::new(),
+        Err(_) => panic!("Error occurred while opening the file"),
+    }
+}
+
 pub fn add_expense(expense_list: &mut ExpenseList) {
     println!("Enter expense details:");
     let category = select_category();
@@ -51,14 +82,12 @@ pub fn add_expense(expense_list: &mut ExpenseList) {
     expense_list.add(category, amount, description);
     println!("{}", "Expense added successfully!".green());
     println!();
-    home(expense_list);
 }
 
 pub fn view_all_expense(expense_list: &mut ExpenseList) {
     println!("Here are all your expenses");
     expense_list.view_all();
     println!();
-    home(expense_list);
 }
 
 pub fn calculate_total_expenses(expense_list: &mut ExpenseList) {
@@ -68,8 +97,6 @@ pub fn calculate_total_expenses(expense_list: &mut ExpenseList) {
     );
     // total function call
     println!();
-    // call home function
-    home(expense_list);
 }
 
 pub fn delete_expense(expense_list: &mut ExpenseList) {
@@ -78,8 +105,6 @@ pub fn delete_expense(expense_list: &mut ExpenseList) {
     expense_list.remove(id);
     // take input Enter ID of expense to delete:
     println!("{}", "Expense deleted successfully!".yellow());
-    // call home function
-    home(expense_list);
 }
 
 fn select_category() -> ExpenseCategory {
